@@ -1,0 +1,9 @@
+faiss-cpu
+python-liquid
+openai==0.28.0
+langchain
+tqdm
+transformers
+sentence_transformers
+tiktoken
+datasets
