@@ -38,7 +38,7 @@ for question_id, data in random_questions:
 
     # Store comparison results
     result = {
-        "question_id": question_id,
+        "scores": scores,
         "question": question,
         "options": options,
         "model_answer": model_answer,
@@ -51,7 +51,7 @@ for question_id, data in random_questions:
 
 # Print results for comparison
 for result in results:
-    print(f"Question ID: {result['question_id']}")
+    print(f"Score: {result['scores']}")
     print(f"Question: {result['question']}")
     print(f"Options: {result['options']}")
     print(f"Model Answer: {result['model_answer']}")
