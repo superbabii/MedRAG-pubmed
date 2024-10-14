@@ -12,8 +12,9 @@ random_questions = random.sample(list(benchmark_data.items()), 1)
 # Initialize the MedRAG model
 medrag = MedRAG(llm_name="OpenAI/gpt-3.5-turbo-16k", rag=True, retriever_name="MedCPT", corpus_name="PubMed")
 
-# Prepare a list to hold comparison results
+# Store the results of comparisons
 results = []
+correct_count = 0
 
 # Loop through the selected questions and generate answers
 for question_id, data in random_questions:
@@ -23,43 +24,41 @@ for question_id, data in random_questions:
 
     # Get model's prediction
     answer, snippets, scores = medrag.answer(question=question, options=options, k=1)
+  
+    # Parse the generated answer and compare with correct answer
+    try:
+        generated_answer_dict = json.loads(answer)
+        generated_choice = generated_answer_dict.get('answer_choice', None)
+    except (json.JSONDecodeError, KeyError):
+        generated_choice = None
+        
+    # Check if generated_choice is valid and compare with correct answer
+    if generated_choice and len(generated_choice) > 0:
+        is_correct = correct_answer == generated_choice[0]
+    else:
+        is_correct = False  # If no valid choice, consider it incorrect
 
-    # Check if the answer is returned as a string and try to parse it as JSON if necessary
-    if isinstance(answer, str):
-        try:
-            answer = json.loads(answer)  # Try parsing the string as JSON
-        except json.JSONDecodeError:
-            print(f"Error: Unable to parse 'answer' for question '{question_id}' as JSON.")
-            answer = {}
+    if is_correct:
+        correct_count += 1
 
-    # Access the 'answer_choice' and 'step_by_step_thinking' fields from the parsed answer
-    model_answer = answer.get('answer_choice', 'No answer provided')
-    rationale = answer.get('step_by_step_thinking', 'No rationale provided')
-
-    # Store comparison results
     result = {
-        "scores": scores,
-        "question": question,
-        "options": options,
-        "model_answer": model_answer,
-        "correct_answer": correct_answer,
-        "is_correct": model_answer == correct_answer,
-        "rationale": rationale
+        'question': question,
+        'correct_answer': correct_answer,
+        'generated_answer': generated_choice,
+        'is_correct': is_correct,
+        'snippets': snippets,
+        'scores': scores
     }
-
     results.append(result)
 
-# Print results for comparison
+# Print the results of the comparison
 for result in results:
     print(f"Score: {result['scores']}")
-    print(f"Question: {result['question']}")
-    print(f"Options: {result['options']}")
-    print(f"Model Answer: {result['model_answer']}")
     print(f"Correct Answer: {result['correct_answer']}")
-    print(f"Correct: {result['is_correct']}")
-    print(f"Rationale: {result['rationale']}")
-    print("-" * 50)
+    print(f"Generated Answer: {result['generated_answer']}")
+    print(f"Is Correct: {result['is_correct']}")
+    print('-' * 50)
 
 # Calculate accuracy
-accuracy = sum([1 for result in results if result['is_correct']]) / len(results)
-print(f"Accuracy: {accuracy * 100}%")
+accuracy = correct_count / len(results) * 100
+print(f"Accuracy: {accuracy:.2f}%")
