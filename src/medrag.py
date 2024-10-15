@@ -129,10 +129,12 @@ class MedRAG:
         else:
             stopping_criteria = None
             prompt = None
-            if hasattr(self.tokenizer, "apply_chat_template"):
+            # Check if chat templating should be used
+            if hasattr(self.tokenizer, "apply_chat_template") and hasattr(self.tokenizer, "chat_template"):
+                # Only use chat template if it exists
                 prompt = self.tokenizer.apply_chat_template(messages, tokenize=True, add_generation_prompt=True)
             else:
-                # Construct the prompt without using chat templating
+                # Manually build prompt by concatenating the user messages
                 prompt = "\n".join([msg['content'] for msg in messages if msg['role'] == 'user'])
             if "meditron" in self.llm_name.lower():
                 # stopping_criteria = custom_stop(["###", "User:", "\n\n\n"], self.tokenizer, input_len=len(self.tokenizer.encode(prompt_cot, add_special_tokens=True)))
