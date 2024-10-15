@@ -10,10 +10,7 @@ with open("benchmark.json", "r") as file:
 random_questions = random.sample(list(benchmark_data.items()), 1)
 
 # Initialize the MedRAG model
-# medrag = MedRAG(llm_name="meta-llama/Llama-3.2-1B", rag=True, retriever_name="MedCPT", corpus_name="PubMed", HNSW=True)
-
-# CoT
-medrag = MedRAG(llm_name="meta-llama/Llama-3.2-1B", rag=False)
+medrag = MedRAG(llm_name="meta-llama/Llama-3.2-1B", rag=True, retriever_name="MedCPT", corpus_name="PubMed", HNSW=True)
 
 # Store the results of comparisons
 results = []
