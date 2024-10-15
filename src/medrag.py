@@ -92,6 +92,9 @@ class MedRAG:
                 self.tokenizer.chat_template = open('./templates/pmc_llama.jinja').read().replace('    ', '').replace('\n', '')
                 self.max_length = 2048
                 self.context_length = 1024
+            # Default template for any other model
+            if not hasattr(self.tokenizer, 'chat_template'):
+                self.tokenizer.chat_template = "{{input}}"
             self.model = transformers.pipeline(
                 "text-generation",
                 model=self.llm_name,
