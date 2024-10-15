@@ -23,7 +23,7 @@ for question_id, data in random_questions:
     correct_answer = data["answer"]
 
     # Get model's prediction
-    answer, snippets, scores = medrag.answer(question=question, options=options, k=1)
+    answer, snippets, scores = medrag.answer(question=question, options=options, k=3)
   
     # Parse the generated answer and compare with correct answer
     try:
