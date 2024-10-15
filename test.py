@@ -20,16 +20,18 @@ try:
     # Generate text with the pipeline
     result = pipe(
         "The key to life is", 
-        max_length=50,  
-        num_return_sequences=1,  
+        max_length=75,  # Increased length for more detailed responses
+        num_return_sequences=3,  # Generate 3 different sequences
         do_sample=True,  
         top_k=50,  
-        top_p=0.95,  
-        temperature=0.7,
+        top_p=0.92,  # Slightly adjusted top_p for a bit more diversity
+        temperature=0.8,  # Adjusted temperature for more creativity
         truncation=True,  
     )
-    
-    print(result[0]['generated_text'])
+
+    # Print all the generated outputs
+    for i, generation in enumerate(result):
+        print(f"Generated Text {i+1}: {generation['generated_text']}\n")
 
 except Exception as e:
     print(f"Error loading model or generating text: {e}")
