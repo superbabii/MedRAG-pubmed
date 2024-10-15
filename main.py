@@ -7,7 +7,7 @@ with open("benchmark.json", "r") as file:
     benchmark_data = json.load(file)
 
 # Select 5 random samples from the benchmark
-random_questions = random.sample(list(benchmark_data.items()), 50)
+random_questions = random.sample(list(benchmark_data.items()), 25)
 
 # Initialize the MedRAG model
 medrag = MedRAG(llm_name="OpenAI/gpt-3.5-turbo-16k", rag=True, retriever_name="MedCPT", corpus_name="PubMed")
@@ -23,7 +23,7 @@ for question_id, data in random_questions:
     correct_answer = data["answer"]
 
     # Get model's prediction
-    answer, snippets, scores = medrag.answer(question=question, options=options, k=3)
+    answer, snippets, scores = medrag.answer(question=question, options=options, k=5)
   
     # Parse the generated answer and compare with correct answer
     try:
