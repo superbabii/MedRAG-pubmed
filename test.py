@@ -20,12 +20,13 @@ try:
     # Generate text with the pipeline
     result = pipe(
         "The key to life is", 
-        max_length=50,  # Specify max length for generated text
-        num_return_sequences=1,  # Number of sequences to generate
-        do_sample=True,  # Enable sampling to make output more diverse
-        top_k=50,  # Only consider the top 50 token options for sampling
-        top_p=0.95,  # Nucleus sampling (truncates to top 95% probability mass)
-        truncation=True,  # Explicitly enable truncation
+        max_length=50,  
+        num_return_sequences=1,  
+        do_sample=True,  
+        top_k=50,  
+        top_p=0.95,  
+        temperature=0.7,
+        truncation=True,  
     )
     
     print(result[0]['generated_text'])
