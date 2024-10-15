@@ -77,6 +77,7 @@ class MedRAG:
                 self.max_length = 4096
                 self.context_length = 3072
             elif "llama-3" in llm_name.lower():
+                self.tokenizer.chat_template = open('./templates/pmc_llama.jinja').read().replace('    ', '').replace('\n', '')
                 self.max_length = 8192
                 self.context_length = 7168
                 if ".1" in llm_name or ".2" in llm_name:
@@ -92,9 +93,6 @@ class MedRAG:
                 self.tokenizer.chat_template = open('./templates/pmc_llama.jinja').read().replace('    ', '').replace('\n', '')
                 self.max_length = 2048
                 self.context_length = 1024
-            # Default template for any other model
-            if not hasattr(self.tokenizer, 'chat_template'):
-                self.tokenizer.chat_template = "{{input}}"
             self.model = transformers.pipeline(
                 "text-generation",
                 model=self.llm_name,
@@ -131,10 +129,7 @@ class MedRAG:
             )
         else:
             stopping_criteria = None
-            if hasattr(self.tokenizer, 'chat_template'):
-                prompt = self.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-            else:
-                prompt = " ".join([msg["content"] for msg in messages if msg["role"] == "user"])
+            prompt = self.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
             if "meditron" in self.llm_name.lower():
                 # stopping_criteria = custom_stop(["###", "User:", "\n\n\n"], self.tokenizer, input_len=len(self.tokenizer.encode(prompt_cot, add_special_tokens=True)))
                 stopping_criteria = self.custom_stop(["###", "User:", "\n\n\n"], input_len=len(self.tokenizer.encode(prompt, add_special_tokens=True)))
