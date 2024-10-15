@@ -7,10 +7,10 @@ with open("benchmark.json", "r") as file:
     benchmark_data = json.load(file)
 
 # Select 5 random samples from the benchmark
-random_questions = random.sample(list(benchmark_data.items()), 25)
+random_questions = random.sample(list(benchmark_data.items()), 1)
 
 # Initialize the MedRAG model
-medrag = MedRAG(llm_name="OpenAI/gpt-3.5-turbo-16k", rag=True, retriever_name="MedCPT", corpus_name="PubMed")
+medrag = MedRAG(llm_name="meta-llama/Llama-3.2-1B", rag=True, retriever_name="MedCPT", corpus_name="PubMed")
 
 # Store the results of comparisons
 results = []
